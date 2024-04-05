@@ -30,8 +30,11 @@ extrato = ''
 usuarios = []
 contas_corrente = []
 
-def cria_usuario(nomedata_nascimento,cpf,*endereco):
-     ...
+def cria_usuario(nome,data_nascimento,cpf,endereco):
+     global usuarios
+     novo_usuario = (nome,data_nascimento,cpf,endereco)
+     usuarios.append(novo_usuario)
+     print(usuarios)
 
 def deposito(valor_deposito):
     global extrato
@@ -65,12 +68,16 @@ def movimentacoes(saldo, ext=extrato):
      print("\n")
      print(ext)
      print(f"\nSaldo: R$ {saldo},00")
-while opcao != 4:
+
+
+while opcao != 6:
     print("""
 1 - DEPOSITO
 2 - SAQUE
 3 - EXTRATO
-4 - SAIR
+4 - CRIAR NOVO USUÁRIO
+5 - CRIAR NOVA CONTA
+6 - SAIR
 """)
     
     opcao = int(input("Opcao:"))
@@ -83,6 +90,22 @@ while opcao != 4:
         saque(valor_saque=valor)
     if opcao == 3:
         movimentacoes(saldo,extrato)
-    elif opcao > 4 or opcao <= 0:
+    if opcao == 4:
+        nome = 'Calel' #input("Nome: ")
+        data_nascimento = '19/01/01' #input("Data de Nascimento: ")
+        cpf = '1234-444.12' #input("CPF: ")
+        while cpf.isdigit() == False:
+             print("CPF precisa receber apenas números!!")
+             cpf = '123456'
+        #print("ENDERECO")
+        rua = 'petri' #input("Rua: ")
+        numero = '31' #input("Número: ")
+        bairro = 'fatima' #input("Bairro: ")
+        cidade = 'Caxuxa' #input("Cidade: ")
+        estado = 'RJ' #input("Estado: ")
+
+        endereco = f'{rua}, {numero} - {bairro} - {cidade}/{estado}'
+        cria_usuario(nome=nome, data_nascimento=data_nascimento, cpf=cpf, endereco=endereco)
+    elif opcao > 6 or opcao <= 0:
         print("opcao inválida!")
         
