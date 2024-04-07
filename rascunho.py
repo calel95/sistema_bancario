@@ -1,62 +1,102 @@
-# def imprime_endereco(nome, endereco):
-#     # Dividir a string de endereço em partes
-#     logradouro, cidade,estado = endereco.split(',')
-
-#     # Imprimir os dados
-#     print(f"Nome: {nome}")
-#     print(f"Endereço: {logradouro}, {cidade}, {estado}")
-
-# # Testar a função
-# imprime_endereco("João da Silva", "Rua das Flores, São Paulo, SP")
-
+opcao = 0
+saldo = 0
+quantidade_de_saques_no_dia = 0
+#operacao = []
+extrato = ''
 usuarios = []
+contas_corrente = []
 
-# def cria_usuario(endereco,nome,data_nascimento,cpf):
-#      print(nome)
-#      print(data_nascimento)
-#      print(cpf)
-#      print(endereco)
+def cria_usuario(nome,data_nascimento,cpf,endereco):
+    global usuarios
+    novo_usuario = (nome,data_nascimento,cpf,endereco)
+    usuarios.append(novo_usuario)
+    print(usuarios)
 
-#      logradouro, nro, bairro = endereco.split(",")
-#      print(logradouro)
-#      print(nro)
-#      print(bairro)
+def deposito(valor_deposito):
+    global extrato
+    global saldo
+    if valor_deposito >0:
+        saldo += valor_deposito
+        extrato += f'Depósito: R${valor_deposito},00\n'
+    else:
+        print("Valor do depósito precisa ser positivo!")
+    return extrato, saldo
 
-#cria_usuario(endereco='Rua petri, 31, fatima, cachoeirinha/RS',nome='Calel',data_nascimento='19/01/1895',cpf=2654879897)
+def saque(valor_saque):
+    global extrato
+    global saldo
+    global quantidade_de_saques_no_dia
+    if valor_saque > 500 or quantidade_de_saques_no_dia > 3:
+            print("excedeu o limite de saque no valor de 500 reais ou 3 saques diários")
+    elif saldo == 0:
+        print("Não é possivel realizar operação sem saldo")
+    elif saldo < valor_saque:
+        print(f"Saldo insuficiente para realizar o saque, seu saldo atual é de R${saldo},00")
+    else:
+        saldo -= valor_saque
+        extrato += f'Saque: R${valor_saque},00\n'
+        quantidade_de_saques_no_dia += 1 
+    return extrato, quantidade_de_saques_no_dia, saldo
 
+def movimentacoes(saldo, ext=extrato):
+     print("\n")
+     print(ext)
+     print(f"\nSaldo: R$ {saldo},00")
 
+def valida_cpf(cpf):
+    global usuarios
+    print("CCCCPF", cpf)
+    print(usuarios)
+    for i in usuarios:
+        print(i)
+        if cpf == i[2]:
+            print("ja existe cpf")
+            return True
+    return False
 
-def cria_usuario(endereco,nome,data_nascimento,cpf):
+while opcao != 7:
+    print("""
+1 - DEPOSITO
+2 - SAQUE
+3 - EXTRATO
+4 - CRIAR NOVO USUÁRIO
+5 - CRIAR NOVA CONTA
+6 - LISTAR USUARIOS
+7 - SAIR
+""")
 
-    rua,n = endereco.split(",")
-    nro,bairro,cidade = n.split("-")
-    cidade, estado = cidade.split("/")
-    endereco = {'rua': rua, 'numero':nro, 'bairro': bairro, 'cidade': cidade, 'estado': estado}
-    print(endereco)
+    opcao = int(input("Opcao:"))
 
-#cria_usuario(endereco='Rua petri, 31 - fatima - cachoeirinha/RS',nome='Calel',data_nascimento="19/01/1900",cpf=123456789)
+    if opcao == 1:
+        valor_deposito = int(input("\nValor do deposito:"))
+        deposito(valor_deposito)
+    if opcao == 2:
+        valor = int(input("Valor do saque:"))
+        saque(valor)
+    if opcao == 3:
+        movimentacoes(saldo,extrato)
+    if opcao == 4:
+        nome = 'Calel' #input("Nome: ")
+        data_nascimento = '19/01/01' #input("Data de Nascimento: ")
+        cpf = input("CPF: ")
+        while cpf.isdigit() == False or len(cpf) != 11:
+            print("CPF precisa receber apenas números e ter 11 digitos!!")
+            cpf = input("CPF: ")
+        if valida_cpf(cpf) == False:
+            #print("ENDERECO")
+            rua = 'Luizito' #input("Rua: ")
+            numero = '31' #input("Número: ")
+            bairro = 'Florida' #input("Bairro: ")
+            cidade = 'Goiania' #input("Cidade: ")
+            estado = 'MJ' #input("Estado: ")
 
-#endereco = {'rua': 'Rua petri', 'numero':31, 'bairro': 'Fatima', 'cidade': 'cachoeirinha', 'estado': 'RS'}
-
-def cria_usuario_2(endereco,nome,data_nascimento,cpf):
-    # rua = input("Rua: ")
-    # nro = input("numero: ")
-    # bairro = input("bairro: ")
-    # cidade = input("cidade: ")
-    # estado = input("estado: ")
-    print(endereco)
-    print(nome)
-    print(data_nascimento)
-    print(cpf)
-    #ende = {'rua': rua, 'numero':nro, 'bairro': bairro, 'cidade': cidade, 'estado': estado}
-
-# rua = input("Rua: ")
-# nro = input("numero: ")
-# bairro = input("bairro: ")
-# cidade = input("cidade: ")
-# estado = input("estado: ")
-
-#ende2 = {'rua': rua, 'numero':nro, 'bairro': bairro, 'cidade': cidade, 'estado': estado}
-
-#cria_usuario_2(endereco=ende2, nome='Calel',data_nascimento='19-01-1880',cpf=123456789)
-
+            endereco = f'{rua}, {numero} - {bairro} - {cidade}/{estado}'
+            cria_usuario(nome=nome, data_nascimento=data_nascimento, cpf=cpf, endereco=endereco)
+        else:
+            print("CPF já cadastrado!")
+    if opcao == 6:
+         print(usuarios)
+         for i in usuarios:
+              print(i[2])
+    elif opcao > 7 or opcao <= 0:
+        print("opcao inválida!")

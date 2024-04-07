@@ -29,12 +29,13 @@ quantidade_de_saques_no_dia = 0
 extrato = ''
 usuarios = []
 contas_corrente = []
+cpf = '1'
 
 def cria_usuario(nome,data_nascimento,cpf,endereco):
      global usuarios
      novo_usuario = (nome,data_nascimento,cpf,endereco)
      usuarios.append(novo_usuario)
-     print(usuarios)
+     #print(usuarios)
 
 def deposito(valor_deposito):
     global extrato
@@ -69,15 +70,25 @@ def movimentacoes(saldo, ext=extrato):
      print(ext)
      print(f"\nSaldo: R$ {saldo},00")
 
-
-while opcao != 6:
+def valida_cpf(cpf=cpf):
+    global usuarios
+    #print(usuarios)
+    for i in usuarios:
+        #print(i)
+        if cpf == i[2]:
+            print("Já existe usuário cadastrado com o mesmo CPF!!", i)
+            return True
+    return False
+        
+while opcao != 7:
     print("""
 1 - DEPOSITO
 2 - SAQUE
 3 - EXTRATO
 4 - CRIAR NOVO USUÁRIO
 5 - CRIAR NOVA CONTA
-6 - SAIR
+6 - LISTAR USUARIOS
+7 - SAIR
 """)
     
     opcao = int(input("Opcao:"))
@@ -93,19 +104,26 @@ while opcao != 6:
     if opcao == 4:
         nome = 'Calel' #input("Nome: ")
         data_nascimento = '19/01/01' #input("Data de Nascimento: ")
-        cpf = '1234-444.12' #input("CPF: ")
+        cpf = input("CPF: ")
         while cpf.isdigit() == False:
              print("CPF precisa receber apenas números!!")
              cpf = '123456'
-        #print("ENDERECO")
-        rua = 'petri' #input("Rua: ")
-        numero = '31' #input("Número: ")
-        bairro = 'fatima' #input("Bairro: ")
-        cidade = 'Caxuxa' #input("Cidade: ")
-        estado = 'RJ' #input("Estado: ")
+        if valida_cpf(cpf) == False:
+            #print("ENDERECO")
+            rua = 'Luizito' #input("Rua: ")
+            numero = '31' #input("Número: ")
+            bairro = 'Florida' #input("Bairro: ")
+            cidade = 'Goiania' #input("Cidade: ")
+            estado = 'MJ' #input("Estado: ")
 
-        endereco = f'{rua}, {numero} - {bairro} - {cidade}/{estado}'
-        cria_usuario(nome=nome, data_nascimento=data_nascimento, cpf=cpf, endereco=endereco)
-    elif opcao > 6 or opcao <= 0:
+            endereco = f'{rua}, {numero} - {bairro} - {cidade}/{estado}'
+            cria_usuario(nome=nome, data_nascimento=data_nascimento, cpf=cpf, endereco=endereco)
+        else:
+             print("Só é permitido um CPF por usuário!!")
+    if opcao == 6:
+         print(usuarios)
+         for i in usuarios:
+              print(i)
+    elif opcao > 7 or opcao <= 0:
         print("opcao inválida!")
         
