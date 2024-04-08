@@ -22,6 +22,8 @@ Dica: pra vincular usuario a conta, filtrar a lista de usuarios buscando pelo CP
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 '''
 
+import random
+
 opcao = 0
 saldo = 0
 quantidade_de_saques_no_dia = 0
@@ -29,10 +31,22 @@ quantidade_de_saques_no_dia = 0
 extrato = ''
 usuarios = []
 contas_corrente = []
-cpf = '1'
+conta = 1
+usuario_nao_existe = True
+#cpf = '1'
+
+     
+
+def cria_conta_corrente(agencia,numero_conta,usuario):
+    global usuarios
+    global contas_corrente
+    nova_conta = (agencia,numero_conta,usuario)
+    contas_corrente.append(nova_conta)
+     
 
 def cria_usuario(nome,data_nascimento,cpf,endereco):
      global usuarios
+     #endereco = dict(endereco)
      novo_usuario = (nome,data_nascimento,cpf,endereco)
      usuarios.append(novo_usuario)
      #print(usuarios)
@@ -70,7 +84,7 @@ def movimentacoes(saldo, ext=extrato):
      print(ext)
      print(f"\nSaldo: R$ {saldo},00")
 
-def valida_cpf(cpf=cpf):
+def valida_cpf(cpf):
     global usuarios
     #print(usuarios)
     for i in usuarios:
@@ -80,7 +94,7 @@ def valida_cpf(cpf=cpf):
             return True
     return False
         
-while opcao != 7:
+while opcao != 8:
     print("""
 1 - DEPOSITO
 2 - SAQUE
@@ -88,8 +102,10 @@ while opcao != 7:
 4 - CRIAR NOVO USUÁRIO
 5 - CRIAR NOVA CONTA
 6 - LISTAR USUARIOS
-7 - SAIR
+7 - LISTAR CONTAS
+8 - SAIR
 """)
+    usuario_nao_existe = True
     
     opcao = int(input("Opcao:"))
 
@@ -119,11 +135,28 @@ while opcao != 7:
             endereco = f'{rua}, {numero} - {bairro} - {cidade}/{estado}'
             cria_usuario(nome=nome, data_nascimento=data_nascimento, cpf=cpf, endereco=endereco)
         else:
-             print("Só é permitido um CPF por usuário!!")
+            print("Só é permitido um CPF por usuário!!")
+    if opcao == 5: 
+        agencia = '0001'
+        usuario_da_conta = input('Digite seu CPF para cadastrar uma conta:')
+        for i in usuarios:
+            #print(i[2])
+            if usuario_da_conta == i[2]:
+                usuario_nao_existe = False
+        if usuario_nao_existe:
+            print("\nNão é possível cadastrar conta sem usuário cadastrado!!")
+        for i in usuarios:
+            #print(i[2])
+            if usuario_da_conta == i[2]:
+                print(f"Conta criada e vinculado ao usuário cadastrado: {i}")
+                conta += 1
+                cria_conta_corrente(agencia=agencia,numero_conta=conta,usuario=i)
     if opcao == 6:
-         print(usuarios)
+         #print(usuarios)
          for i in usuarios:
               print(i)
-    elif opcao > 7 or opcao <= 0:
+    if opcao == 7:
+         print(contas_corrente)
+    elif opcao > 8 or opcao <= 0:
         print("opcao inválida!")
         
