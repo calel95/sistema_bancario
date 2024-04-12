@@ -43,7 +43,6 @@ def cria_conta_corrente(agencia,numero_conta,usuario):
     nova_conta = (agencia,numero_conta,usuario)
     contas_corrente.append(nova_conta)
      
-
 def cria_usuario(nome,data_nascimento,cpf,endereco):
      global usuarios
      #endereco = dict(endereco)
@@ -93,6 +92,14 @@ def valida_cpf(cpf):
             print("Já existe usuário cadastrado com o mesmo CPF!!", i)
             return True
     return False
+
+def valida_usuario(usuario_da_conta):
+    global usuarios
+    for i in usuarios:
+        #print(i[2])
+        if usuario_da_conta == i[2]:
+            return True
+    return False
         
 while opcao != 8:
     print("""
@@ -105,7 +112,6 @@ while opcao != 8:
 7 - LISTAR CONTAS
 8 - SAIR
 """)
-    usuario_nao_existe = True
     
     opcao = int(input("Opcao:"))
 
@@ -124,7 +130,7 @@ while opcao != 8:
         while cpf.isdigit() == False:
              print("CPF precisa receber apenas números!!")
              cpf = '123456'
-        if valida_cpf(cpf) == False:
+        if not valida_cpf(cpf):
             #print("ENDERECO")
             rua = 'Luizito' #input("Rua: ")
             numero = '31' #input("Número: ")
@@ -139,18 +145,19 @@ while opcao != 8:
     if opcao == 5: 
         agencia = '0001'
         usuario_da_conta = input('Digite seu CPF para cadastrar uma conta:')
-        for i in usuarios:
-            #print(i[2])
-            if usuario_da_conta == i[2]:
-                usuario_nao_existe = False
-        if usuario_nao_existe:
+        # for i in usuarios:
+        #     #print(i[2])
+        #     if usuario_da_conta == i[2]:
+        #         usuario_nao_existe = False
+        if not valida_usuario(usuario_da_conta):
             print("\nNão é possível cadastrar conta sem usuário cadastrado!!")
-        for i in usuarios:
-            #print(i[2])
-            if usuario_da_conta == i[2]:
-                print(f"Conta criada e vinculado ao usuário cadastrado: {i}")
-                conta += 1
-                cria_conta_corrente(agencia=agencia,numero_conta=conta,usuario=i)
+        if valida_usuario(usuario_da_conta) == True:
+            for i in usuarios:
+                #print(i[2])
+                if usuario_da_conta == i[2]:
+                    print(f"Conta criada e vinculado ao usuário cadastrado: {i}")
+                    conta += 1
+                    cria_conta_corrente(agencia=agencia,numero_conta=conta,usuario=i)
     if opcao == 6:
          #print(usuarios)
          for i in usuarios:
